@@ -73,6 +73,45 @@ module Sudoku
                 end
             end
         end
-        
-    end
+
+        def has_duplicates?
+            0.upto(8) {|row| return true if rowdigits(row).uniq! }
+            0.upto(8) {|col| return true if coldigits(col).uniq! }
+            0.upto(8) {|box| return true if boxdigits(box).uniq! }
+
+            false
+        end
+
+        AllDigits = [1,2,3,4,5,6,7,8,9].freeze
+
+        def possible(row, col, box)
+            AllDigits - (rowdigits(row) + coldigits(col) + boxdigits(box))
+        end
+
+        private
+
+        def rowdigits(row)
+            @grid[row*9,9] - [0]
+        end
+
+        def coldigits(col)
+            result = []
+            col.step(80, 9) {|i|
+            v = @grid[i]
+            result << v if (v != 0)
+        end
+            }
+            result
+        end
+
+        BoxToIndex = [0, 3, 6, 27, 30, 33, 54, 57, 60].freeze
+
+        def boxdigits(b)
+            i = BoxToIndex[b]
+            [
+                @grid[i], @grid[i+1], @grid[i+2],
+                @grid[i+9], @grid[i+10], @grid[i+11],
+                @grid[i+18], @grid[i+19], @grid[i+20]
+            ] - [0]
+        end
 end
