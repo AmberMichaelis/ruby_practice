@@ -115,3 +115,60 @@ module Sudoku
             ] - [0]
         end
 end
+
+class Invalid < StandardError
+end
+
+class Impossible < StandardError
+end
+
+def Sudoku.scan(puzzle)
+    unchanged = false
+
+    until unchanged
+        unchanged = true
+        rmin, cmin, pmin = nil
+        min = 10
+
+        puzzle.each_unknown do |row, col, box|
+            p = puzzle.possible(row, col, box)
+
+            case p.size
+            when 0
+                raise Impossible
+            when 1
+                puzzle[row, col] = p[0]
+                unchanged = false
+            else
+                if unchanged && p.size < min
+                    min = p.size
+                    rmin, cmin, pmin = row, col, p
+                end
+            end
+        end
+    end
+
+    return rmin, cmin, pmin
+end
+
+def Sudoku.solve(puzzle)
+    puzzle = puzzle.dup
+    r, c, p = scan(puzzle)
+
+    return puzzle if r == nil
+
+    p.each do |guess|
+        puzzle[r,c] = guess
+
+        begin
+          return solve(puzzle)
+        rescue Impossible
+            next
+        end
+    end
+    
+    raise Impossible
+end
+end
+        
+
