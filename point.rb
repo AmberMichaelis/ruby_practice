@@ -3,12 +3,22 @@ class Point
         @x, @y = x, y
     end
 
-    def to _s
+    def x
+        @x
+    end
+
+    def y
+        @y
+    end
+
+    def to_s
         "(#@x, #@y)"
       
     end
+
 end
 
-p = new Point(1,2)
-puts p
+p = Point.new(1,2)
+q = Point.new(p.x*2, p.y*2)
+puts q.to_s
 
